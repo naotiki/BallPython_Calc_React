@@ -1,0 +1,4 @@
+# プロジェクトの除外パス
+/.gradle/
+/build/
+/build/js/packages/untitled1/kotlin/
