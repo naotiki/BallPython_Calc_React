@@ -9,21 +9,26 @@ import io.ktor.client.statement.*
 import io.ktor.content.*
 import io.ktor.http.*
 import io.ktor.utils.io.core.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.serialization.builtins.ArraySerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.PairSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToDynamic
+import org.w3c.dom.Worker
+import kotlin.math.pow
 
 class Api {
-    var httpStatusCallback: (HttpStatusCode) -> Unit = {
 
-    }
     val endpoint =
         "http://127.0.0.1:4545"//window.location.origin // only needed until https://github.com/ktorio/ktor/issues/1695 is resolved
+
+    fun GetHttpClient() {
+
+    }
+
     val jsonClient = HttpClient(Js) {
 
         install(JsonFeature) {
@@ -38,11 +43,18 @@ class Api {
 
         HttpResponseValidator {
             validateResponse { response: HttpResponse ->
-                httpStatusCallback(response.status)
-                console.log(response.receive())
+
 
             }
+            /*  handleResponseException { cause: Throwable ->
+                  window.alert(
+  """エラーが発生しました。
+  サーバーが落ちている可能性があります。
+  ErrorMessage:${cause.message.toString()}"""
+                  )
+              }*/
         }
+
     }
 
     fun about(callback: (List<GeneticPair>, List<Genetic>) -> Unit) {
@@ -60,44 +72,161 @@ class Api {
         }
     }
 
-    fun Calc(male: Snake, female: Snake, callback: (List<Pair<String, Double>>) -> Unit) {
+    fun Start(male: Snake, female: Snake, callback: (List<Pair<String, Double>>?) -> Unit) {
         if (male.pairs == listOf<GeneticPair>()) {
             male.pairs = listOf(GeneticPair.normal)
         }
         if (female.pairs == listOf<GeneticPair>()) {
             female.pairs = listOf(GeneticPair.normal)
         }
-        GlobalScope.launch(Dispatchers.Default) {
+
+
+      val s=  Json.encodeToString(
+            PairSerializer(
+                ListSerializer(PairSerializer(Int.serializer(), Int.serializer())),
+                ListSerializer(PairSerializer(Int.serializer(), Int.serializer()))
+            ), Pair(
+                male.ConvertToInt(),
+                female.ConvertToInt()
+            )
+        )
+       val w= Worker("calc.js")
+        w.onmessage={
+            console.log(it.data)
+
+          val e=  Json.decodeFromString<List<List<List<Int>>>>(
+
+               it.data.toString()
+            )
+            console.log(e)
+            val result = mutableListOf<Pair<String, Double>>()
+            e.toSet().forEach { list ->
+                val l= e.filter {it2-> it2==list }.size
+                result.add(Pair(Snake.Convert(list).toString(),l.toDouble()/e.size.toDouble()))
+            }
+            callback(result)
+
+
+
+        }
+        w.postMessage(s);
+    }
+
+
+    fun CalcLocal(male: Snake, female: Snake, callback: (List<Pair<String, Double>>?) -> Unit): Job {
+        if (male.pairs == listOf<GeneticPair>()) {
+            male.pairs = listOf(GeneticPair.normal)
+        }
+        if (female.pairs == listOf<GeneticPair>()) {
+            female.pairs = listOf(GeneticPair.normal)
+        }
+        return GlobalScope.launch(Dispatchers.Default) {
+            var pairs = mutableListOf<Pair<Pair<Int, Int>, Pair<Int, Int>>>()
+            val f = female.pairs.toMutableList()
+            male.pairs.forEach {
+                val i = female.pairs.indexOf(it)
+                if (i != -1) {
+                    pairs.add(Pair(it.toIntPair(), female.pairs[i].toIntPair()))
+                    f.removeAt(i)
+                } else {
+                    pairs.add(Pair(it.toIntPair(), GeneticPair.normal.toIntPair()))
+                }
+            }
+            f.forEach {
+                pairs.add(Pair(it.toIntPair(), GeneticPair.normal.toIntPair()))
+            }
+
+            if (pairs.size != 1) {
+                pairs = pairs.filter {
+                    return@filter it.first != Pair(0, 0)
+                }.toMutableList()
+            }
+
+            val all = 4.0.pow(pairs.size).toInt()
+
+            val children = mutableListOf<Snake>()
+            for (i in 0 until all) {
+                children.add(Snake())
+            }
+
+            for (i in 0 until pairs.size) {
+                val pair = pairs[i]
+                val groups = listOf(
+                    Pair(pair.first.first, pair.second.first),
+                    Pair(pair.first.first, pair.second.second),
+                    Pair(pair.first.second, pair.second.first),
+                    Pair(pair.first.second, pair.second.second),
+                )
+                var groupIndex = 0;
+                var index = 0;
+                while (index < all) {
+                    for (i2 in 0 until all / (4.0.pow(i).toInt())) {
+                        children[index].addFromId(groups[groupIndex])
+                        index++
+                    }
+                    groupIndex++
+                    if (groupIndex >= 4) groupIndex = 0
+                }
+            }
+
+            val result = mutableListOf<Pair<String, Double>>()
+            val allMorphs = mutableListOf<String>()
+            children.forEach {
+                allMorphs.add(it.toString())
+            }
+            val morphs = allMorphs.toSet()
+            morphs.forEach { element ->
+                val l = allMorphs.filter { it == element }.size.toDouble()
+                result.add(element to l / allMorphs.size.toDouble())
+            }
+            callback(result)
+
+
+        }
+    }
+
+
+    fun Calc(male: Snake, female: Snake, callback: (List<Pair<String, Double>>?) -> Unit): Job {
+        if (male.pairs == listOf<GeneticPair>()) {
+            male.pairs = listOf(GeneticPair.normal)
+        }
+        if (female.pairs == listOf<GeneticPair>()) {
+            female.pairs = listOf(GeneticPair.normal)
+        }
+        return GlobalScope.launch(Dispatchers.Default) {
             /*jsonClient.get<List<GeneticPair>>(endpoint+GeneticPair.path)
             Genetic.geneticList =jsonClient.get<List<Genetic>>(endpoint+Genetic.path)*/
             /* val two:String=jsonClient.get(endpoint+Genetic.path)
              console.log(two)*/
-            val status = jsonClient.use {
-                val serializer = PairSerializer(
-                    ListSerializer(PairSerializer(Int.serializer(), Int.serializer())),
-                    ListSerializer(PairSerializer(Int.serializer(), Int.serializer()))
+
+            val serializer = PairSerializer(
+                ListSerializer(PairSerializer(Int.serializer(), Int.serializer())),
+                ListSerializer(PairSerializer(Int.serializer(), Int.serializer()))
+            )
+
+            val bodyText = Json.encodeToString(serializer, Pair(male.ConvertToInt(), female.ConvertToInt()))
+            val status = jsonClient.post<HttpResponse>(
+                urlString =
+                "$endpoint/api/calc"
+            ) {
+                body = TextContent(
+                    bodyText, ContentType.Application.Json
                 )
+            }
 
-                val bodyText = Json.encodeToString(serializer, Pair(male.ConvertToInt(), female.ConvertToInt()))
-                val response =
-                    it.post<HttpResponse>(
-                        urlString =
-                        "$endpoint/api/calc"
-                    ) {
-                        body = TextContent(
-                            bodyText, ContentType.Application.Json
-                        )
-                    }
+            console.log(status.status)
+            if (status.status == HttpStatusCode.OK) {
+                val s = status.readText()
+                console.log(s)
 
-                console.log(response.status)
-                if (response.status == HttpStatusCode.OK) {
-                    val s = response.readText()
-                    console.log(s)
+                callback(Json.decodeFromString(s))
+            } else {
 
-                    callback(Json.decodeFromString(s))
-                }
+                callback(null)
 
             }
+
+
 //"$endpoint/api/calc", body = Pair(male.ConvertToInt(), female.ConvertToInt())
 
             //jsonClient.get<List<Pair<String,Double>>>()

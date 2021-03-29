@@ -37,11 +37,11 @@ data class Snake(var pairs:List<GeneticPair>){
     }
 
     companion object{
-        fun Convert(list: List<Pair<Int,Int>>): Snake {
+        fun Convert(list: List<List<Int>>): Snake {
 
             val r= mutableListOf<GeneticPair>()
             list.forEach {
-                r.add( ToGeneticPairFromID(it))
+                r.add( ToGeneticPairFromID(Pair(it[0],it[1])))
             }
             return Snake(r)
         }

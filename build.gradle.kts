@@ -17,11 +17,15 @@ repositories {
     maven { url = uri("https://dl.bintray.com/kotlin/kotlin-js-wrappers") }
     maven { url= uri("https://dl.bintray.com/kotlin/kotlinx") }
     maven { url=uri("https://dl.bintray.com/kotlin/ktor") }
+    maven("https://dl.bintray.com/chainfire/maven")
 }
 
 dependencies {
     implementation(kotlin("stdlib-js"))
     testImplementation(kotlin("test-js"))
+
+    implementation("eu.chainfire:kotlin-js-threads:1.0.1")
+    implementation(npm("setimmediate", "^1.0.5"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
 

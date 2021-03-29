@@ -11,16 +11,16 @@ import com.ccfraser.muirwik.components.list.mList
 import com.ccfraser.muirwik.components.list.mListItem
 import com.ccfraser.muirwik.components.list.mListItemText
 import com.ccfraser.muirwik.components.table.*
+import kotlinx.coroutines.Job
 import kotlinx.css.*
+import org.w3c.dom.Worker
 import react.*
 import react.dom.li
 import styled.css
 import styled.styledDiv
 import kotlin.math.roundToInt
 
-interface AppProps : RProps {
-    var api: Api
-}
+
 
 data class AppState(
 
@@ -37,8 +37,8 @@ data class AppState(
 ) : RState
 
 
-class Welcome : RComponent<AppProps, AppState>() {
-
+class Welcome : RComponent<RProps, AppState>() {
+private val api:Api=Api()
     override fun AppState.init() {
         console.log(normal)
 
@@ -53,6 +53,7 @@ class Welcome : RComponent<AppProps, AppState>() {
         result = emptyList()
 
         waitForResult = false
+
     }
 
 
@@ -247,8 +248,7 @@ class Welcome : RComponent<AppProps, AppState>() {
         if (state.maleMorphList.size + state.femaleMorphList.size >= 10) {
             mAlert("遺伝子の数が多いため計算に時間がかかる場合があります", severity = MAlertSeverity.warning)
         }
-
-        //BUG ここ
+        var job:Job?=null
         styledDiv {
             css {
                 textAlign = TextAlign.center
@@ -256,11 +256,24 @@ class Welcome : RComponent<AppProps, AppState>() {
             }
             mButton("計算", color = MColor.primary, size = MButtonSize.large, onClick = { _ ->
 
-
-                Api().Calc(Snake(state.maleMorphList.toList()), Snake(state.femaleMorphList.toList())) {
+                setState {
+                    waitForResult = true
+                }
+                // job=
+              api.Start(Snake(state.maleMorphList.toList()), Snake(state.femaleMorphList.toList())) {
+                   if (it != null) {
+                       setState {
+                           result = it
+                       }
+                   }
                     setState {
-                        result = it
+                        waitForResult = false
                     }
+
+                }
+
+                job?.invokeOnCompletion {
+                    job=null
                 }
 
 
@@ -325,11 +338,12 @@ class Welcome : RComponent<AppProps, AppState>() {
                             results.forEach {
                                 mTableRow(hover = true, key = it.first) {
                                     mTableCell {
-                                        if (alias.containsKey(it.first)) {
-                                            +alias[it.first]!!
-                                        } else {
+                                        alias[it.first]?.also { str ->
+                                            +str
+                                        } ?: run {
                                             +it.first
                                         }
+
                                     }
                                     mTableCell(align = MTableCellAlign.right) {
                                         +(it.second * 100).toString()
@@ -347,7 +361,23 @@ class Welcome : RComponent<AppProps, AppState>() {
             }
         }
 
+        mBackdrop(state.waitForResult){
 
+            css {
+                zIndex=10
+                color= Color.black
+            }
+            mCircularProgress(color = MCircularProgressColor.primary)
+            mTypography("計算中"){
+                css {
+                    color= Color.white
+                }
+            }
+            mButton("キャンセル",color = MColor.secondary,onClick = {
+                job?.cancel()
+                setState { waitForResult=false }
+            })
+        }
     }
 
 
