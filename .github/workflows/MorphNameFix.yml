@@ -1,0 +1,42 @@
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  issues:
+    types: [opened]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        shell: sh
+        if: ${{contains( github.event.issue.labels.*.name, 'New Alias' )}}
+        run: |
+          STR="${{github.event.issue.body}}"
+          ARR=(${STR// => /\" to \"})
+          echo -e "\n\"${ARR[@]}\",\n" >> Alias.txt
+          echo -e "val alias = mapOf(\n" > src/main/kotlin/Alias.kt
+          cat Alias.txt >> src/main/kotlin/Alias.kt
+          echo -e ")\n}" >> src/main/kotlin/Alias.kt
+          cat src/main/kotlin/Alias.kt
+      - name: Create Pull Request # ブランチを作成して PullRequest を作成
+        id: cpr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: Morph Name Fix
+          labels: New Alias
+          branch: nameFix #作成されるブランチは securityFix-xxxxxxx
+          token: ${{ secrets.GITHUB }}
