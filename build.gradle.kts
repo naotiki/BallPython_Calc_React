@@ -24,8 +24,6 @@ dependencies {
     implementation(kotlin("stdlib-js"))
     testImplementation(kotlin("test-js"))
 
-    implementation("eu.chainfire:kotlin-js-threads:1.0.1")
-    implementation(npm("setimmediate", "^1.0.5"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
 
@@ -51,6 +49,7 @@ dependencies {
     implementation("com.ccfraser.muirwik:muirwik-components:0.6.2")
    implementation(npm("@material-ui/core", "4.11.3"))
     implementation(npm("@material-ui/styles", "4.11.3"))
+    implementation(npm("@material-ui/icons","4.11.2"))
 
 
 }

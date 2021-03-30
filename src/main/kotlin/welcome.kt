@@ -1,9 +1,6 @@
 import GeneticPair.Companion.normal
 import com.ccfraser.muirwik.components.*
-import com.ccfraser.muirwik.components.button.MButtonSize
-import com.ccfraser.muirwik.components.button.MButtonVariant
-import com.ccfraser.muirwik.components.button.mButton
-import com.ccfraser.muirwik.components.button.variant
+import com.ccfraser.muirwik.components.button.*
 import com.ccfraser.muirwik.components.form.MFormControlVariant
 import com.ccfraser.muirwik.components.lab.alert.MAlertSeverity
 import com.ccfraser.muirwik.components.lab.alert.mAlert
@@ -11,9 +8,10 @@ import com.ccfraser.muirwik.components.list.mList
 import com.ccfraser.muirwik.components.list.mListItem
 import com.ccfraser.muirwik.components.list.mListItemText
 import com.ccfraser.muirwik.components.table.*
+import io.ktor.http.*
+import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.css.*
-import org.w3c.dom.Worker
 import react.*
 import react.dom.li
 import styled.css
@@ -35,6 +33,8 @@ data class AppState(
     var result: List<Pair<String, Double>>,
     var waitForResult: Boolean
 ) : RState
+
+
 
 
 class Welcome : RComponent<RProps, AppState>() {
@@ -83,7 +83,7 @@ private val api:Api=Api()
 
         mAppBar() {
             mToolbar {
-                mTypography(variant = MTypographyVariant.h6, text = "Ball Python Calc β")
+                mTypography(variant = MTypographyVariant.h6, text = "Ball Python Calc for Web")
             }
         }
 //OK
@@ -343,6 +343,11 @@ private val api:Api=Api()
                                         } ?: run {
                                             +it.first
                                         }
+                                        mIconButton("drive_file_rename_outline",MColor.primary,size=MIconButtonSize.small,onClick = {_->
+                                            console.log(it.first.encodeURLParameter())
+                                            window.open("https://docs.google.com/forms/d/e/1FAIpQLSc9kJFY5xNFzDE2um8_zEgFPE8iesZlQQU73MZOM0Rv8tbh7w/viewform?usp=pp_url&entry.951019398=${it.first.encodeURLParameter()}")
+
+                                        })
 
                                     }
                                     mTableCell(align = MTableCellAlign.right) {
@@ -351,6 +356,13 @@ private val api:Api=Api()
                                     mTableCell(align = MTableCellAlign.right) {
                                         +Fraction((it.second * 100).roundToInt(), 100).toString()
                                     }
+                                   /* mTableCell(align = MTableCellAlign.right,padding = MTableCellPadding.none) {
+                                        mButton("名前修正"){
+                                            attrs {
+                                                startIcon=mIcon("drive_file_rename_outline",addAsChild = false)
+                                            }
+                                        }
+                                    }*/
                                 }
                             }
 
@@ -360,6 +372,19 @@ private val api:Api=Api()
                 }
             }
         }
+
+ mFab("info",color = MColor.primary,onClick = {
+     window.open("https://github.com/unity709/BallPython_Calc_React")
+ }){
+        css {
+            position=Position.absolute
+            bottom= 10.px
+            right=10.px
+        }
+
+
+    }
+
 
         mBackdrop(state.waitForResult){
 

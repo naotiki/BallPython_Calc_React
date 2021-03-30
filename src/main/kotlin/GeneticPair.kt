@@ -63,7 +63,7 @@ data class GeneticPair(
             get() {
                 return geneticPairs[0]
             }
-        val path: String = "/api/allmorphs"
+        val path: String = "/GeneticPairs.json"
 
         fun ToGeneticPairFromID(pair: Pair<Int, Int>): GeneticPair {
             return GeneticPair(Genetic.FromInt(pair.first), Genetic.FromInt(pair.second))

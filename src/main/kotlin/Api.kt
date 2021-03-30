@@ -9,6 +9,7 @@ import io.ktor.client.statement.*
 import io.ktor.content.*
 import io.ktor.http.*
 import io.ktor.utils.io.core.*
+import kotlinx.browser.window
 import kotlinx.coroutines.*
 import kotlinx.serialization.builtins.ArraySerializer
 import kotlinx.serialization.builtins.ListSerializer
@@ -23,7 +24,7 @@ import kotlin.math.pow
 class Api {
 
     val endpoint =
-        "http://127.0.0.1:4545"//window.location.origin // only needed until https://github.com/ktorio/ktor/issues/1695 is resolved
+        window.location.origin // only needed until https://github.com/ktorio/ktor/issues/1695 is resolved
 
     fun GetHttpClient() {
 
@@ -56,6 +57,8 @@ class Api {
         }
 
     }
+
+
 
     fun about(callback: (List<GeneticPair>, List<Genetic>) -> Unit) {
         GlobalScope.launch(Dispatchers.Default) {

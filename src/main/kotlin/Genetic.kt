@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 data class Genetic(val id: Int, val name: String, val order: Order) {
 
     companion object {
-        val path="/api/allgenetic"
+        val path="/Genetics.json"
         var geneticList = listOf<Genetic>();
         val normal:Genetic get() {
             return geneticList[0]
