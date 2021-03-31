@@ -27,7 +27,7 @@ jobs:
         run: |
           STR="${{github.event.issue.body}}"
           ARR=(${STR// => /\" to \"})
-          echo -e "\n\"${FIX[@]}\",\n" >> Alias.txt
+          echo -e "\n\"${ARR[@]}\",\n" >> Alias.txt
           echo -e "val alias = mapOf(\n" > src/main/kotlin/Alias.kt
           cat Alias.txt >> src/main/kotlin/Alias.kt
           echo -e ")" >> src/main/kotlin/Alias.kt
