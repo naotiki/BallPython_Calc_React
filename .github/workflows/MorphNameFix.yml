@@ -30,7 +30,7 @@ jobs:
           echo -e "\n\"${FIX[@]}\",\n" >> Alias.txt
           echo -e "val alias = mapOf(\n" > src/main/kotlin/Alias.kt
           cat Alias.txt >> src/main/kotlin/Alias.kt
-          echo -e ")\n}" >> src/main/kotlin/Alias.kt
+          echo -e ")" >> src/main/kotlin/Alias.kt
           cat src/main/kotlin/Alias.kt
       - name: Create Pull Request # ブランチを作成して PullRequest を作成
         id: cpr
