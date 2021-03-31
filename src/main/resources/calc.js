@@ -22,7 +22,7 @@ self.addEventListener('message', function (e) {
         pairs.push([[element.first, element.second], [0, 0]]);
     });
     if (pairs.length !== 1) {
-        pairs = pairs.filter(it => it[0] !== [0]);
+        pairs = pairs.filter(it => it[0] !== [0,0]);
     }
     console.log(pairs)
     let all = Math.pow(4, pairs.length);
