@@ -1,27 +1,59 @@
-// キャッシュファイルの指定
-var CACHE_NAME = 'pwa-sample-caches';
-var urlsToCache = [
-    '/ballpython.naotiki-apps.xyz/',
+// Service Worker のバージョンとキャッシュする App Shell を定義する
+
+const NAME = 'BallPython_Morph';
+const VERSION = '002';
+const CACHE_NAME = NAME + VERSION;
+const urlsToCache = [
+    './index.html',
+    './untitled1.js',
+    './GeneticPairs.json',
+    './Genetics.json',
+    './calc.js',
+    '/',
 ];
 
-// インストール処理
-self.addEventListener('install', function(event) {
+// Service Worker へファイルをインストール
+
+self.addEventListener('install', function (event) {
     event.waitUntil(
-        caches
-            .open(CACHE_NAME)
-            .then(function(cache) {
+        caches.open(CACHE_NAME)
+            .then(function (cache) {
+                console.log('Opened cache');
                 return cache.addAll(urlsToCache);
             })
     );
 });
 
-// リソースフェッチ時のキャッシュロード処理
-self.addEventListener('fetch', function(event) {
-    event.respondWith(
-        caches
-            .match(event.request)
-            .then(function(response) {
-                return response ? response : fetch(event.request);
+// リクエストされたファイルが Service Worker にキャッシュされている場合
+// キャッシュからレスポンスを返す
+
+self.addEventListener('fetch', function (e) {
+    console.log('fetch', e.request.url);
+    e.respondWith(
+        caches.match(e.request, {
+            ignoreSearch:true
+        })
+            .then(response => {
+                return response || fetch(e.request);
             })
+    );
+
+});
+
+// Cache Storage にキャッシュされているサービスワーカーのkeyに変更があった場合
+// 新バージョンをインストール後、旧バージョンのキャッシュを削除する
+// (このファイルでは CACHE_NAME をkeyの値とみなし、変更を検知している)
+
+self.addEventListener('activate', event => {
+    event.waitUntil(
+        caches.keys().then(keys => Promise.all(
+            keys.map(key => {
+                if (!CACHE_NAME.includes(key)) {
+                    return caches.delete(key);
+                }
+            })
+        )).then(() => {
+            console.log(CACHE_NAME + "activated");
+        })
     );
 });

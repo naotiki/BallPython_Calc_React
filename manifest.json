@@ -1,12 +1,19 @@
 {
     "name": "ボールパイソン遺伝計算機",
     "short_name": "ボールパイソン",
-    "start_url": ".",
+    "start_url": "/",
+    "scope": "/",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
     "description": "A new Flutter project.",
     "orientation": "portrait-primary",
-    "prefer_related_applications": false
-
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "/icons8_year_of_snake_104px.png",
+            "type": "image/png",
+            "sizes": "104x104"
+        }
+    ]
 }
