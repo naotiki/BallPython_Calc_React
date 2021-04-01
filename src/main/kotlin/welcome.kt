@@ -7,15 +7,13 @@ import com.ccfraser.muirwik.components.lab.alert.mAlert
 import com.ccfraser.muirwik.components.table.*
 import io.ktor.http.*
 import kotlinx.browser.window
-import kotlinx.coroutines.Job
 import kotlinx.css.*
+import org.w3c.dom.Worker
 import react.*
 import react.dom.li
 import styled.css
 import styled.styledDiv
 import kotlin.math.roundToInt
-
-
 
 
 data class AppState(
@@ -147,10 +145,10 @@ class Welcome : RComponent<RProps, AppState>() {
                             padding(0.5.px)
                             margin(0.px)
                         }
-                        if (state.maleMorphList.size==0) {
-                            mTypography("何も選択しないとノーマルになります。"){
-                                css{
-                                    color= Color.gray
+                        if (state.maleMorphList.size == 0) {
+                            mTypography("何も選択しないとノーマルになります。") {
+                                css {
+                                    color = Color.gray
                                 }
                             }
                         }
@@ -220,10 +218,10 @@ class Welcome : RComponent<RProps, AppState>() {
                             padding(0.5.px)
                             margin(0.px)
                         }
-                        if (state.femaleMorphList.size==0) {
-                            mTypography("何も選択しないとノーマルになります。"){
-                                css{
-                                    color= Color.gray
+                        if (state.femaleMorphList.size == 0) {
+                            mTypography("何も選択しないとノーマルになります。") {
+                                css {
+                                    color = Color.gray
                                 }
                             }
                         }
@@ -248,7 +246,7 @@ class Welcome : RComponent<RProps, AppState>() {
         if (state.maleMorphList.size + state.femaleMorphList.size >= 10) {
             mAlert("遺伝子の数が多いため計算に時間がかかる場合があります", severity = MAlertSeverity.warning)
         }
-        var job: Job? = null
+        var job: Worker? = null
         styledDiv {
             css {
                 textAlign = TextAlign.center
@@ -259,8 +257,7 @@ class Welcome : RComponent<RProps, AppState>() {
                 setState {
                     waitForResult = true
                 }
-                // job=
-                api.Start(Snake(state.maleMorphList.toList()), Snake(state.femaleMorphList.toList())) {
+                job = api.Start(Snake(state.maleMorphList.toList()), Snake(state.femaleMorphList.toList())) {
                     if (it != null) {
                         setState {
                             result = it
@@ -269,12 +266,9 @@ class Welcome : RComponent<RProps, AppState>() {
                     setState {
                         waitForResult = false
                     }
-
+                    job=null
                 }
 
-                job?.invokeOnCompletion {
-                    job = null
-                }
 
 
             }) {
@@ -403,7 +397,8 @@ class Welcome : RComponent<RProps, AppState>() {
                 }
             }
             mButton("キャンセル", color = MColor.secondary, onClick = {
-                job?.cancel()
+                job?.terminate()
+                job = null
                 setState { waitForResult = false }
             })
         }

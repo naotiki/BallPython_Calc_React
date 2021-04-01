@@ -75,7 +75,7 @@ class Api {
         }
     }
 
-    fun Start(male: Snake, female: Snake, callback: (List<Pair<String, Double>>?) -> Unit) {
+    fun Start(male: Snake, female: Snake, callback: (List<Pair<String, Double>>?) -> Unit): Worker {
         if (male.pairs == listOf<GeneticPair>()) {
             male.pairs = listOf(GeneticPair.normal)
         }
@@ -112,7 +112,8 @@ class Api {
 
 
         }
-        w.postMessage(s);
+        w.postMessage(s)
+        return w
     }
 
 
@@ -160,8 +161,8 @@ class Api {
                     Pair(pair.first.second, pair.second.first),
                     Pair(pair.first.second, pair.second.second),
                 )
-                var groupIndex = 0;
-                var index = 0;
+                var groupIndex = 0
+                var index = 0
                 while (index < all) {
                     for (i2 in 0 until all / (4.0.pow(i).toInt())) {
                         children[index].addFromId(groups[groupIndex])
