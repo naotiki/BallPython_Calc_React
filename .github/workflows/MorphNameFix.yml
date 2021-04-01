@@ -40,3 +40,8 @@ jobs:
           labels: New Alias
           branch: nameFix #作成されるブランチは securityFix-xxxxxxx
           token: ${{ secrets.GITHUB }}
+      - name: Close Issue
+        uses: peter-evans/close-issue@v1
+        with:
+          comment: |
+            PRから変更されたファイルをマージしてください
