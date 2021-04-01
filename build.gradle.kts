@@ -1,6 +1,6 @@
 plugins {
-    kotlin("js") version "1.4.31"
-    kotlin("plugin.serialization") version "1.4.31"
+    kotlin("js") version "1.4.32"
+    kotlin("plugin.serialization") version "1.4.32"
 }
 val ktor_version="1.5.2"
 val coroutines_version="1.4.2-native-mt"

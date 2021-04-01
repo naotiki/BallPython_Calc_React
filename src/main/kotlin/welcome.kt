@@ -4,9 +4,6 @@ import com.ccfraser.muirwik.components.button.*
 import com.ccfraser.muirwik.components.form.MFormControlVariant
 import com.ccfraser.muirwik.components.lab.alert.MAlertSeverity
 import com.ccfraser.muirwik.components.lab.alert.mAlert
-import com.ccfraser.muirwik.components.list.mList
-import com.ccfraser.muirwik.components.list.mListItem
-import com.ccfraser.muirwik.components.list.mListItemText
 import com.ccfraser.muirwik.components.table.*
 import io.ktor.http.*
 import kotlinx.browser.window
@@ -17,6 +14,7 @@ import react.dom.li
 import styled.css
 import styled.styledDiv
 import kotlin.math.roundToInt
+
 
 
 
@@ -35,10 +33,9 @@ data class AppState(
 ) : RState
 
 
-
-
 class Welcome : RComponent<RProps, AppState>() {
-private val api:Api=Api()
+
+    private val api: Api = Api()
     override fun AppState.init() {
         console.log(normal)
 
@@ -80,8 +77,11 @@ private val api:Api=Api()
 
     override fun RBuilder.render() {
 
+        /*  val femaleList = useMemo({
 
-        mAppBar() {
+          }, arrayOf(state.femaleFind))*/
+
+        mAppBar {
             mToolbar {
                 mTypography(variant = MTypographyVariant.h6, text = "Ball Python Calc for Web")
             }
@@ -110,24 +110,17 @@ private val api:Api=Api()
                             overflow = Overflow.auto
                         }
 
-                        mList {
-                            GeneticPair.geneticPairs.filter {
-                                it.toString().adjust().contains(state.maleFind.adjust()) || (state.maleFind == "")
-                            }.forEach { pair ->
-
-                                mListItem(button = true, onClick = {
-
+                        child(MorphListMemo) {
+                            attrs {
+                                filter = state.maleFind
+                                onAddPair = {
                                     setState {
-                                        maleMorphList.add(pair)
+                                        maleMorphList.add(it)
                                     }
-
-                                }) {
-
-                                    mListItemText(primary = pair.toString())
                                 }
                             }
-
                         }
+
                     }
                     mTextField(
 
@@ -173,32 +166,42 @@ private val api:Api=Api()
                         mIcon("female", fontSize = MIconFontSize.large)
                         +"メス"
                     }
-                    mPaper() {
+                    mPaper {
                         css {
                             height = 200.px
                             overflow = Overflow.auto
                         }
 
-                        mList {
-                            GeneticPair.geneticPairs.filter {
-                                it.toString().adjust().contains(state.femaleFind.adjust())
-                            }
-                                .forEach { pair ->
 
-                                    mListItem(button = true, onClick = {
-
-                                        setState {
-                                            femaleMorphList.add(pair)
-                                        }
-
-                                    }
-
-                                    ) {
-
-                                        mListItemText(primary = pair.toString())
+                        child(MorphListMemo) {
+                            attrs {
+                                filter = state.femaleFind
+                                onAddPair = {
+                                    setState {
+                                        femaleMorphList.add(it)
                                     }
                                 }
+                            }
                         }
+                        /* GeneticPair.geneticPairs.filter {
+                             it.toString().adjust().contains(state.femaleFind.adjust())
+                         }
+                             .forEach { pair ->
+
+                                 mListItem(button = true, onClick = {
+
+                                     setState {
+                                         femaleMorphList.add(pair)
+                                     }
+
+                                 }
+
+                                 ) {
+
+                                     mListItemText(primary = pair.toString())
+                                 }
+                             }*/
+
                     }
 
                     mTextField(
@@ -248,7 +251,7 @@ private val api:Api=Api()
         if (state.maleMorphList.size + state.femaleMorphList.size >= 10) {
             mAlert("遺伝子の数が多いため計算に時間がかかる場合があります", severity = MAlertSeverity.warning)
         }
-        var job:Job?=null
+        var job: Job? = null
         styledDiv {
             css {
                 textAlign = TextAlign.center
@@ -260,12 +263,12 @@ private val api:Api=Api()
                     waitForResult = true
                 }
                 // job=
-              api.Start(Snake(state.maleMorphList.toList()), Snake(state.femaleMorphList.toList())) {
-                   if (it != null) {
-                       setState {
-                           result = it
-                       }
-                   }
+                api.Start(Snake(state.maleMorphList.toList()), Snake(state.femaleMorphList.toList())) {
+                    if (it != null) {
+                        setState {
+                            result = it
+                        }
+                    }
                     setState {
                         waitForResult = false
                     }
@@ -273,7 +276,7 @@ private val api:Api=Api()
                 }
 
                 job?.invokeOnCompletion {
-                    job=null
+                    job = null
                 }
 
 
@@ -343,11 +346,15 @@ private val api:Api=Api()
                                         } ?: run {
                                             +it.first
                                         }
-                                        mIconButton("drive_file_rename_outline",MColor.primary,size=MIconButtonSize.small,onClick = {_->
-                                            console.log(it.first.encodeURLParameter())
-                                            window.open("https://docs.google.com/forms/d/e/1FAIpQLSc9kJFY5xNFzDE2um8_zEgFPE8iesZlQQU73MZOM0Rv8tbh7w/viewform?usp=pp_url&entry.951019398=${it.first.encodeURLParameter()}")
+                                        mIconButton(
+                                            "drive_file_rename_outline",
+                                            MColor.primary,
+                                            size = MIconButtonSize.small,
+                                            onClick = { _ ->
+                                                console.log(it.first.encodeURLParameter())
+                                                window.open("https://docs.google.com/forms/d/e/1FAIpQLSc9kJFY5xNFzDE2um8_zEgFPE8iesZlQQU73MZOM0Rv8tbh7w/viewform?usp=pp_url&entry.951019398=${it.first.encodeURLParameter()}")
 
-                                        })
+                                            })
 
                                     }
                                     mTableCell(align = MTableCellAlign.right) {
@@ -356,13 +363,13 @@ private val api:Api=Api()
                                     mTableCell(align = MTableCellAlign.right) {
                                         +Fraction((it.second * 100).roundToInt(), 100).toString()
                                     }
-                                   /* mTableCell(align = MTableCellAlign.right,padding = MTableCellPadding.none) {
-                                        mButton("名前修正"){
-                                            attrs {
-                                                startIcon=mIcon("drive_file_rename_outline",addAsChild = false)
-                                            }
-                                        }
-                                    }*/
+                                    /* mTableCell(align = MTableCellAlign.right,padding = MTableCellPadding.none) {
+                                         mButton("名前修正"){
+                                             attrs {
+                                                 startIcon=mIcon("drive_file_rename_outline",addAsChild = false)
+                                             }
+                                         }
+                                     }*/
                                 }
                             }
 
@@ -373,34 +380,34 @@ private val api:Api=Api()
             }
         }
 
- mFab("info",color = MColor.primary,onClick = {
-     window.open("https://github.com/unity709/BallPython_Calc_React")
- }){
-        css {
-            position=Position.absolute
-            bottom= 10.px
-            right=10.px
+        mFab("info", color = MColor.primary, onClick = {
+            window.open("https://github.com/unity709/BallPython_Calc_React")
+        }) {
+            css {
+                position = Position.absolute
+                bottom = 10.px
+                right = 10.px
+            }
+
+
         }
 
 
-    }
-
-
-        mBackdrop(state.waitForResult){
+        mBackdrop(state.waitForResult) {
 
             css {
-                zIndex=10
-                color= Color.black
+                zIndex = 10
+                color = Color.black
             }
             mCircularProgress(color = MCircularProgressColor.primary)
-            mTypography("計算中"){
+            mTypography("計算中") {
                 css {
-                    color= Color.white
+                    color = Color.white
                 }
             }
-            mButton("キャンセル",color = MColor.secondary,onClick = {
+            mButton("キャンセル", color = MColor.secondary, onClick = {
                 job?.cancel()
-                setState { waitForResult=false }
+                setState { waitForResult = false }
             })
         }
     }
