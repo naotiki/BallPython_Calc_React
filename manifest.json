@@ -6,14 +6,19 @@
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "ボールパイソンの遺伝計算機",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
         {
-            "src": "/icons8_year_of_snake_104px.png",
+            "src": "/snake_192.png",
             "type": "image/png",
-            "sizes": "104x104"
+            "sizes": "192x192"
+        },
+        {
+            "src": "/snake_512.png",
+            "type": "image/png",
+            "sizes": "512x512"
         }
     ]
 }
