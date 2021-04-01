@@ -1,8 +1,10 @@
+import com.ccfraser.muirwik.components.*
 import com.ccfraser.muirwik.components.list.mList
 import com.ccfraser.muirwik.components.list.mListItem
 import com.ccfraser.muirwik.components.list.mListItemText
+import kotlinx.css.*
 import react.*
-import react.dom.p
+import styled.css
 
 external interface MorphListProps : RProps {
     var filter: String
@@ -10,14 +12,13 @@ external interface MorphListProps : RProps {
 }
 
 
-
-val AllList:FunctionalComponent<MorphListProps> ={
+val AllList: FunctionalComponent<MorphListProps> = {
     useMemo({
         buildElement {
             mList {
                 GeneticPair.geneticPairs.forEach { pair ->
 
-                    mListItem(button = true, onClick = {_->
+                    mListItem(button = true, onClick = { _ ->
 
                         it.onAddPair(pair)
 
@@ -33,10 +34,22 @@ val AllList:FunctionalComponent<MorphListProps> ={
 }
 
 
-
-val MorphListMemo = memo<MorphListProps> { prop: MorphListProps ->
+val MorphListMemo = memo<MorphListProps>({ prop: MorphListProps ->
     if (prop.filter == "") {
-        AllList(prop)
+        buildElement {
+            mTypography {
+                css {
+                    color = Color.gray
+
+                }
+                attrs {
+                    align = MTypographyAlign.center
+
+                }
+                +"ここに検索結果が表示されます"
+            }
+        }
+        //AllList(prop)
     } else {
         buildElement {
             mList {
@@ -58,5 +71,8 @@ val MorphListMemo = memo<MorphListProps> { prop: MorphListProps ->
     }
 
 
-}
+}, { a, b ->
+
+    return@memo a.filter == b.filter
+})
 

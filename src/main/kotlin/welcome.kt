@@ -124,8 +124,8 @@ class Welcome : RComponent<RProps, AppState>() {
                     }
                     mTextField(
 
-                        label = "オス",
-                        helperText = "何も選択しないとノーマルになります",
+                        label = "検索",
+                        placeholder = "オス",
                         variant = MFormControlVariant.outlined,
                         onChange = {
                             console.log(it.targetValue)
@@ -146,6 +146,13 @@ class Welcome : RComponent<RProps, AppState>() {
                             listStyleType = ListStyleType.none
                             padding(0.5.px)
                             margin(0.px)
+                        }
+                        if (state.maleMorphList.size==0) {
+                            mTypography("何も選択しないとノーマルになります。"){
+                                css{
+                                    color= Color.gray
+                                }
+                            }
                         }
                         state.maleMorphList.forEach {
                             li {
@@ -183,31 +190,14 @@ class Welcome : RComponent<RProps, AppState>() {
                                 }
                             }
                         }
-                        /* GeneticPair.geneticPairs.filter {
-                             it.toString().adjust().contains(state.femaleFind.adjust())
-                         }
-                             .forEach { pair ->
 
-                                 mListItem(button = true, onClick = {
-
-                                     setState {
-                                         femaleMorphList.add(pair)
-                                     }
-
-                                 }
-
-                                 ) {
-
-                                     mListItemText(primary = pair.toString())
-                                 }
-                             }*/
 
                     }
 
                     mTextField(
 
-                        label = "メス",
-                        helperText = "何も選択しないとノーマルになります",
+                        label = "検索",
+                        placeholder = "メス",
                         variant = MFormControlVariant.outlined,
 
                         onChange = {
@@ -229,6 +219,13 @@ class Welcome : RComponent<RProps, AppState>() {
                             listStyleType = ListStyleType.none
                             padding(0.5.px)
                             margin(0.px)
+                        }
+                        if (state.femaleMorphList.size==0) {
+                            mTypography("何も選択しないとノーマルになります。"){
+                                css{
+                                    color= Color.gray
+                                }
+                            }
                         }
                         state.femaleMorphList.forEach {
                             li {
