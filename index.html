@@ -1,10 +1,73 @@
+<!--
+material-ui
+https://github.com/mui-org/material-ui
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Call-Em-All
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+React
+https://github.com/facebook/react
+
+MIT License
+
+Copyright (c) Facebook, Inc. and its affiliates.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+Muirwik
+
+https://github.com/cfnz/muirwik
+
+This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+If a copy of the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
+-->
 <!DOCTYPE html>
 <html lang="ja">
-<head>
+<head prefix="og: http://ogp.me/ns#">
     <meta charset="UTF-8">
-    <title>ボールパイソン</title>
+    <meta
+            name="viewport"
+            content="minimum-scale=1, initial-scale=1, width=device-width"
+    />
+    <meta name="Description" content="このページではボールパイソンの遺伝を計算することができます。">
 
+    <meta property="og:url" content="https://ballpython.naotiki-apps.xyz"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="ボールパイソン遺伝計算 (ベータ)"/>
+    <meta property="og:description" content="このページではボールパイソンの遺伝を計算することができます。"/>
+    <meta property="og:site_name" content="ゲームとかアプリとか作ってます"/>
+    <meta property="og:image" content="https://ballpython.naotiki-apps.xyz/snake_512.png"/>
 
+    <title>ボールパイソン遺伝計算 (ベータ)</title>
+
+    <link rel="icon" href="./favicon.ico">
     <link rel="manifest" href="/manifest.json">
     <script async src="https://cdn.jsdelivr.net/npm/pwacompat" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
@@ -16,11 +79,11 @@
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('service_worker.js', {scope: './'})
             .then(function (reg) {
-                if(reg.installing) {
+                if (reg.installing) {
                     console.log('Service Worker をインストール中です');
-                } else if(reg.waiting) {
+                } else if (reg.waiting) {
                     console.log('Service Worker をインストールしました');
-                } else if(reg.active) {
+                } else if (reg.active) {
                     console.log('Service Worker は有効です');
                 }
                 console.log('ServiceWorker registration successful with scope: ', reg.scope);
