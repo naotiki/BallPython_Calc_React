@@ -1,8 +1,8 @@
-name: Kotlin React CI
+name: Build And Deploy
 'on':
   push:
     branches:
-      - master
+      - release
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
