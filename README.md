@@ -1,4 +1,4 @@
-# ボールパイソンのモルフ計算
+# ボールパイソンモルフ計算
 [https://ballpython.naotiki-apps.xyz](https://ballpython.naotiki-apps.xyz)
 
 私はボールパイソンはよく知りませんが、友達に頼まれて頑張って作ってみました。
