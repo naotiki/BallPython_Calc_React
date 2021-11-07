@@ -50,6 +50,7 @@ dependencies {
    implementation(npm("@material-ui/core", "4.11.3"))
     implementation(npm("@material-ui/styles", "4.11.3"))
     implementation(npm("@material-ui/icons","4.11.2"))
+implementation(npm("@material-ui/lab","4.11.3"))
 
 
 }
