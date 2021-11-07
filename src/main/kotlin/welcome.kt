@@ -81,7 +81,7 @@ class Welcome : RComponent<RProps, AppState>() {
 
         mAppBar {
             mToolbar {
-                mTypography(variant = MTypographyVariant.h6, text = "Ball Python Calc for Web")
+                mTypography(variant = MTypographyVariant.h6, text = "ボールパイソン モルフ計算機")
             }
         }
 //OK
@@ -122,7 +122,7 @@ class Welcome : RComponent<RProps, AppState>() {
                     }
                     mTextField(
 
-                        label = "検索",
+                        label = "モルフを検索",
                         placeholder = "オス",
                         variant = MFormControlVariant.outlined,
                         onChange = {
@@ -194,7 +194,7 @@ class Welcome : RComponent<RProps, AppState>() {
 
                     mTextField(
 
-                        label = "検索",
+                        label = "モルフを検索",
                         placeholder = "メス",
                         variant = MFormControlVariant.outlined,
 
@@ -244,7 +244,7 @@ class Welcome : RComponent<RProps, AppState>() {
 
         }
         if (state.maleMorphList.size + state.femaleMorphList.size >= 10) {
-            mAlert("遺伝子の数が多いため計算に時間がかかる場合があります", severity = MAlertSeverity.warning)
+            mAlert("モルフの数が多いため計算に時間がかかる場合があります", severity = MAlertSeverity.warning)
         }
         var job: Worker? = null
         styledDiv {
