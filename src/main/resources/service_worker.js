@@ -1,7 +1,7 @@
 // Service Worker のバージョンとキャッシュする App Shell を定義する
 
 const NAME = 'BallPython_Morph';
-const VERSION = '003';
+const VERSION = '004';
 const CACHE_NAME = NAME + VERSION;
 const urlsToCache = [
     './index.html',

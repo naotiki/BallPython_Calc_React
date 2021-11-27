@@ -349,7 +349,7 @@ class Welcome : RComponent<RProps, AppState>() {
 
                                     }
                                     mTableCell(align = MTableCellAlign.right) {
-                                        +(it.second * 100).toString()
+                                        +"${(it.second * 100)} %"
                                     }
                                     mTableCell(align = MTableCellAlign.right) {
                                         +Fraction((it.second * 100).roundToInt(), 100).toString()
