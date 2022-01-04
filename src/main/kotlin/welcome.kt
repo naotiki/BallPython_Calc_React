@@ -282,6 +282,7 @@ class Welcome : RComponent<RProps, AppState>() {
             mPaper {
                 mToolbar {
                     mTypography("結果", variant = MTypographyVariant.h6, component = "div")
+mTypography("名前の横のボタンで間違えている名前を変更できます。", variant = MTypographyVariant.h6, component = "div")
 
                 }
                 mTableContainer {
